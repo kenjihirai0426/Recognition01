@@ -13,7 +13,9 @@ import com.ibm.watson.developer_cloud.visual_recognition.v3.model.DetectedFaces;
 public class Recognition01_main {
 	public static void main(String[] args){
 		VisualRecognition service = new VisualRecognition("2018-03-19");
-		service.setApiKey("j16016");
+		service.setApiKey("J16016");
+
+		 MySQL mysql = new MySQL();
 
 
 		DetectFacesOptions detectFacesOptions = null;
@@ -31,24 +33,26 @@ public class Recognition01_main {
 		String s = String.valueOf(result);
 
 		ObjectMapper mapper = new ObjectMapper();
+		JsonNode node =null;
 
 		try {
-			JsonNode node = mapper.readTree(s);
+			node = mapper.readTree(s);
 			int age_min = node.get("images").get(0).get("faces").get(0).get("age").get("min").asInt();
 			 System.out.println("age_min : " + age_min);
 
 			 int age_max = node.get("images").get(0).get("faces").get(0).get("age").get("max").asInt();
 			 System.out.println("age_max : " + age_max);
 
-			 float age_score = node.get("images").get(0).get("faces").get(0).get("age").get("score").floatValue();
+			 double age_score = node.get("images").get(0).get("faces").get(0).get("age").get("score").floatValue();
 			 System.out.println("age_score : " + age_score);
 
 			 String gender = node.get("images").get(0).get("faces").get(0).get("gender").get("gender").asText();
 			 System.out.println("gender : " + gender);
 
-			 float gender_min = node.get("images").get(0).get("faces").get(0).get("gender").get("score").floatValue();
+			 double gender_min = node.get("images").get(0).get("faces").get(0).get("gender").get("score").floatValue();
 			 System.out.println("gender_min : " + gender_min);
 
+			 mysql.updateImage(age_min,age_max,age_score,gender, gender_min);
 
 
 		} catch (IOException e) {
